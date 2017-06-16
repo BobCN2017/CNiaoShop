@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.ff.pp.cniao.view.ThreePositionToolbar
+        android:id="@+id/toolbar_home"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="top"
+        android:background="@color/colorPrimary"
+        app:isShowSearchView="true" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_category_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/cardview_light_background"
+            android:paddingRight="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.cjj.MaterialRefreshLayout
+            android:id="@+id/refresh_layout_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#f5f7f6"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.daimajia.slider.library.SliderLayout
+                        android:id="@+id/slider_layout_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp">
+
+                    </com.daimajia.slider.library.SliderLayout>
+
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerView_category_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:nestedScrollingEnabled="false"
+
+                        >
+
+                    </android.support.v7.widget.RecyclerView>
+
+
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+        </com.cjj.MaterialRefreshLayout>
+    </LinearLayout>
+
+</LinearLayout>

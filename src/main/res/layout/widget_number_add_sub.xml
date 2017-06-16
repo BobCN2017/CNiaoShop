@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:background="@drawable/number_widget_background"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/button_sub"
+        style="@style/buttonStyle"
+        android:src="@drawable/ic_snappingstepper_minus"
+         />
+
+    <TextView
+        android:id="@+id/textView_number"
+        android:layout_width="0dp"
+        android:layout_weight="1.3"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="#e8e8e8"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/button_add"
+        style="@style/buttonStyle"
+        android:src="@drawable/ic_snappingstepper_plus"
+         />
+
+</LinearLayout>

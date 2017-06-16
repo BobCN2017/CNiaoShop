@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_cart"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="50dp"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="购物车"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/button_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/right_btn_background"
+            android:text="编辑"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="#838688">
+
+        <CheckBox
+            android:id="@+id/checkbox_pay"
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="全选"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textView_total_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/checkbox_pay"
+            android:layout_toRightOf="@+id/checkbox_pay"
+            android:text="1555.3"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_to_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/cart_right_btn_background"
+            android:minHeight="0dp"
+            android:text="去结算"
+            android:textColor="@color/white"
+
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_delete_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+
+            android:text="删除"
+            android:textColor="@color/textColorGrey"
+            android:textSize="20sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_cart"
+        android:layout_below="@id/toolbar_cart"
+        android:layout_above="@id/relativeLayout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       >
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
