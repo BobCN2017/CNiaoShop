@@ -3,6 +3,12 @@
 
 相关界面如下：
 
+![image](https://github.com/BobCN2017/CNiaoShop/blob/master/src/main/res/raw/home.png)
+![image](https://github.com/BobCN2017/CNiaoShop/blob/master/src/main/res/raw/ware.png)
+![image](https://github.com/BobCN2017/CNiaoShop/blob/master/src/main/res/raw/dir.png) 
+![image](https://github.com/BobCN2017/CNiaoShop/blob/master/src/main/res/raw/cart.png)
+![image](https://github.com/BobCN2017/CNiaoShop/blob/master/src/main/res/raw/login.png)
+
 
 
 
