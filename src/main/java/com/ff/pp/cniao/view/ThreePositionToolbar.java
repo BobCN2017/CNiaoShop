@@ -10,6 +10,7 @@ import android.support.v7.widget.TintTypedArray;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +26,8 @@ import com.ff.pp.myapplication2.R;
  */
 
 public class ThreePositionToolbar extends Toolbar {
+
+    private static final String TAG = "ThreePositionToolbar";
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -85,7 +88,6 @@ public class ThreePositionToolbar extends Toolbar {
 
     private void setUserDefineAttribute(@Nullable AttributeSet attrs, int defStyleAttr) {
         if (attrs != null) {
-
             final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
                     R.styleable.ThreePositionToolbar, defStyleAttr, 0);
             Drawable centerIcon = a.getDrawable(R.styleable.ThreePositionToolbar_centerIcon);

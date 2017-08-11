@@ -19,9 +19,8 @@ public class PreferencesUtil {
     }
 
     public static void putString(String key, String value){
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(key,value);
-        editor.commit();
+        preferences.edit().putString(key,value).commit();
+
     }
 
     public static String getString(String key){

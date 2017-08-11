@@ -56,7 +56,7 @@ public class LoginActivity extends BaseActivity {
         mForgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //TODO
             }
         });
     }
