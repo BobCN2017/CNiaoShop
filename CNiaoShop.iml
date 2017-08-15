@@ -153,6 +153,7 @@
     <orderEntry type="library" exported="" name="imagepipeline-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-QQ-2.8.2" level="project" />
     <orderEntry type="library" exported="" name="okio-1.11.0" level="project" />
+    <orderEntry type="library" exported="" name="eventbus-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-24.2.1" level="project" />
     <orderEntry type="library" exported="" name="SMSSDK-2.1.4-" level="project" />
     <orderEntry type="library" exported="" name="okhttp-3.6.0" level="project" />

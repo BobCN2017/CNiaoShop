@@ -2,13 +2,15 @@ package com.ff.pp.cniao.tools;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.ff.pp.cniao.bean.Ware;
+import com.ff.pp.cniao.bean.WareChange;
 import com.ff.pp.cniao.bean.WareInCart;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,58 +24,87 @@ public class WareInCartProvider {
 
     private static final String TAG = "WareInCartProvider";
     public static final String KEY_WARES_LIST = "key_wares_list";
-    private SparseArray<WareInCart> mWares;
+    private List<WareInCart> mWares;
 
     public static Gson gson = new Gson();
 
-    public WareInCartProvider() {
-        mWares = getDataFromDisk();
+    private WareInCartProvider() {
+        mWares = getListFromDisk();
     }
 
-    public void put(Ware ware) {
-        WareInCart wareInCart = mWares.get(ware.getId());
-        if (wareInCart != null) {
-            wareInCart.setCount(wareInCart.getCount() + 1);
-        } else {
-            wareInCart = new WareInCart(ware);
-        }
-        mWares.put(wareInCart.getId(), wareInCart);
-        saveDataToDisk();
+    public static WareInCartProvider getInstance() {
+        return WareInCartProviderHolder.provider;
+    }
 
+    @Subscribe()
+    public void handleEvent(WareChange wareChange) {
+        Ware wareChanged = wareChange.getWare();
+        WareInCart wareInCart = getWareInList(wareChanged);
+        if (wareInCart == null && wareChange.getChange() > 0) {
+            mWares.add(new WareInCart(wareChanged, wareChange.getChange()));
+        }
+        if (wareInCart != null
+                && (wareChange.getChange() + wareInCart.getCount()) > 0)
+            wareInCart.setCount(wareInCart.getCount() + wareChange.getChange());
+        if (wareInCart != null
+                && (wareChange.getChange() + wareInCart.getCount()) <= 0)
+            delete(wareInCart);
+        saveDataToDisk();
+    }
+
+    @Subscribe()
+    public void handleEvent(List<WareChange> wareChanges) {
+        for (WareChange wareChange:wareChanges){
+            handleEvent(wareChange);
+        }
+    }
+
+    private WareInCart getWareInList(Ware ware) {
+        for (WareInCart wareInCart : mWares) {
+            if (wareInCart.getId() == ware.getId())
+                return wareInCart;
+        }
+        return null;
     }
 
     public void update(WareInCart ware) {
-        mWares.put(ware.getId(), ware);
+        if (ware == null) return;
+        WareInCart wareInCart = getWareInList(ware);
+        if (wareInCart == null)
+            mWares.add(ware);
+        else
+            wareInCart = ware;
         saveDataToDisk();
     }
 
     public void delete(Ware ware) {
-        mWares.remove(ware.getId());
-
+        int pos = getWarePosition(ware);
+        if (pos == -1) return;
+        mWares.remove(pos);
         saveDataToDisk();
     }
 
-    public void removeWares(List<WareInCart> list) {
-        for (WareInCart ware:list){
-            delete(ware);
+    private int getWarePosition(Ware ware) {
+        for (int i = 0, n = mWares.size(); i < n; i++) {
+            if (mWares.get(i).getId() == ware.getId())
+                return i;
         }
-        Log.e(TAG, "removeWares mWares.size(): "+mWares.size() );
+        return -1;
     }
 
     public void setAllSelected(boolean isChecked) {
         for (int i = 0; i < mWares.size(); i++) {
-            mWares.valueAt(i).setChecked(isChecked);
+            mWares.get(i).setChecked(isChecked);
         }
         saveDataToDisk();
     }
 
 
-    public List<WareInCart> getAllSelected(){
-      List<WareInCart> list=new ArrayList<>();
+    public List<WareInCart> getAllSelected() {
+        List<WareInCart> list = new ArrayList<>();
 
-        List<WareInCart> all=getAll();
-        for (WareInCart ware:all){
-            if (ware.isChecked()){
+        for (WareInCart ware : mWares) {
+            if (ware.isChecked()) {
                 list.add(ware);
             }
         }
@@ -81,40 +112,32 @@ public class WareInCartProvider {
     }
 
     public List<WareInCart> getAll() {
-        List<WareInCart> list = getListFromDisk();
-        mWares=listToSparseArray(list);
-        return list;
+
+        return mWares;
     }
 
     public Double countTotal() {
-        mWares=getDataFromDisk();
-        Double total=0d;
+
+        Double total = 0d;
         for (int i = 0; i < mWares.size(); i++) {
-            WareInCart ware=mWares.valueAt(i);
-            if(ware.isChecked()){
-                total+=ware.getPrice()*ware.getCount();
+            WareInCart ware = mWares.get(i);
+            if (ware.isChecked()) {
+                total += ware.getPrice() * ware.getCount();
             }
         }
         return total;
     }
 
     public boolean isAllSelected() {
-        mWares=getDataFromDisk();
+
         for (int i = 0; i < mWares.size(); i++) {
-            WareInCart ware=mWares.valueAt(i);
-            if(!ware.isChecked()){
+            WareInCart ware = mWares.get(i);
+            if (!ware.isChecked()) {
                 return false;
             }
         }
         return true;
     }
-
-
-    private SparseArray<WareInCart> getDataFromDisk() {
-        List<WareInCart> list = getListFromDisk();
-        return listToSparseArray(list);
-    }
-
 
     private List<WareInCart> getListFromDisk() {
         String json = PreferencesUtil.getString(KEY_WARES_LIST);
@@ -137,26 +160,10 @@ public class WareInCartProvider {
     }
 
     private void saveDataToDisk() {
-        List<WareInCart> list = sparseArrayToList(mWares);
-        PreferencesUtil.putString(KEY_WARES_LIST, gson.toJson(list));
-
+        PreferencesUtil.putString(KEY_WARES_LIST, gson.toJson(mWares));
     }
 
-    private List<WareInCart> sparseArrayToList(SparseArray<WareInCart> array) {
-        List<WareInCart> wares = new ArrayList<>();
-
-        for (int i = 0; i < array.size(); i++) {
-            wares.add(array.get(array.keyAt(i)));
-        }
-        return wares;
-    }
-
-    private SparseArray<WareInCart> listToSparseArray(List<WareInCart> list) {
-        SparseArray<WareInCart> wares = new SparseArray<>();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) != null)
-                wares.put(list.get(i).getId(), list.get(i));
-        }
-        return wares;
+    private static class WareInCartProviderHolder {
+        private static WareInCartProvider provider = new WareInCartProvider();
     }
 }

@@ -18,11 +18,14 @@ import com.ff.pp.cniao.PayChanelActivity;
 import com.ff.pp.cniao.adapter.BaseAdapter;
 import com.ff.pp.cniao.adapter.CartAdapter;
 import com.ff.pp.cniao.bean.Ware;
+import com.ff.pp.cniao.bean.WareChange;
 import com.ff.pp.cniao.bean.WareInCart;
 import com.ff.pp.cniao.tools.Constants;
 import com.ff.pp.cniao.tools.WareInCartProvider;
 import com.ff.pp.myapplication2.R;
 import com.ff.pp.cniao.view.DividerDecoration;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +53,7 @@ public class CartFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart, null);
-        mProvider = new WareInCartProvider();
+        mProvider =WareInCartProvider.getInstance();
 
         initCartRecyclerView(view);
         initBottomWidget(view);
@@ -128,8 +131,6 @@ public class CartFragment extends BaseFragment {
 
     private void setAllWareChecked(boolean status) {
         mProvider.setAllSelected(status);
-        mData.clear();
-        mData.addAll(mProvider.getAll());
         mAdapter.notifyDataSetChanged();
         countAndSetTotalCost();
     }
@@ -191,7 +192,7 @@ public class CartFragment extends BaseFragment {
                     WareInCart ware = iterator.next();
                     int postion = mData.indexOf(ware);
                     if (ware.isChecked()) {
-                        mProvider.delete(ware);
+//                        mProvider.delete(ware);
                         iterator.remove();
                         mAdapter.notifyItemRemoved(postion);
                     }
@@ -229,5 +230,6 @@ public class CartFragment extends BaseFragment {
         Double total =mProvider.countTotal();
         mTotalCost.setText("合计：¥" + total);
     }
+
 
 }

@@ -18,6 +18,7 @@ import com.ff.pp.cniao.Application.MyApplication;
 import com.ff.pp.cniao.adapter.WareAdapterInPay;
 import com.ff.pp.cniao.bean.BaseMessage;
 import com.ff.pp.cniao.bean.PayMessage;
+import com.ff.pp.cniao.bean.WareChange;
 import com.ff.pp.cniao.bean.WareInCart;
 import com.ff.pp.cniao.tools.Constants;
 import com.ff.pp.cniao.tools.GsonUtil;
@@ -28,6 +29,8 @@ import com.ff.pp.cniao.tools.WareInCartProvider;
 import com.ff.pp.cniao.view.ThreePositionToolbar;
 import com.ff.pp.myapplication2.R;
 import com.pingplusplus.android.Pingpp;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,8 +56,8 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
      */
     private static final String CHANNEL_ALIPAY = "alipay";
     private static final int ORDER_STATUS_SUCCESS = 1;
-    private static final int ORDER_STATUS_FAIL=-1;
-    private static final int ORDER_STATUS_CANCEL=-2;
+    private static final int ORDER_STATUS_FAIL = -1;
+    private static final int ORDER_STATUS_CANCEL = -2;
 
     private String mPayChannel = CHANNEL_ALIPAY;
 
@@ -95,8 +98,8 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
         mRadioMap.put(CHANNEL_WECHAT, mWeixinPayRadioButton);
         mRadioMap.put(CHANNEL_UPACP, mYinLianRadioButton);
 
-        mAmount = (int)(mAdapter.getWaresTotalCost());
-        if (!TextUtils.isEmpty(mPayChannel)){
+        mAmount = (int) (mAdapter.getWaresTotalCost());
+        if (!TextUtils.isEmpty(mPayChannel)) {
             setPayChannelSelected();
         }
     }
@@ -114,7 +117,7 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initRecyclerView() {
-        mProvider = new WareInCartProvider();
+        mProvider = WareInCartProvider.getInstance();
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_order_list);
         mData = mProvider.getAllSelected();
         mAdapter = new WareAdapterInPay(this, mData);
@@ -152,8 +155,8 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
                 entry.getValue().setChecked(!entry.getValue().isChecked());
                 if (entry.getValue().isChecked()) {
                     mPayChannel = entry.getKey();
-                }else {
-                    mPayChannel="";
+                } else {
+                    mPayChannel = "";
                 }
             } else {
                 entry.getValue().setChecked(false);
@@ -163,7 +166,7 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
 
     public void submitOrder(View view) {
 
-        if (TextUtils.isEmpty(mPayChannel)){
+        if (TextUtils.isEmpty(mPayChannel)) {
             T.showTips("必须选择一个支付方式");
             return;
         }
@@ -179,10 +182,10 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onSuccess(Response response, PayMessage payMessage) {
                         view.setEnabled(true);
-                        if ("success".equals(payMessage.getMessage())){
+                        if ("success".equals(payMessage.getMessage())) {
                             mOrderNum = payMessage.getData().getOrderNum();
                             PayMessage.OrderData orderData = payMessage.getData();
-                            String dataStr=GsonUtil.gson.toJson(orderData.getCharge());
+                            String dataStr = GsonUtil.gson.toJson(orderData.getCharge());
                             Pingpp.createPayment(PayChanelActivity.this, dataStr);
                         }
                     }
@@ -233,29 +236,29 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
              * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
              * "unknown" - app进程异常被杀死(一般是低内存状态下,app进程被杀死)
              */
-            switch (result){
-                case "success":
-                    T.showTips("支付成功");
-                    changeOrderStatusOfNet(ORDER_STATUS_SUCCESS);
-                    removeWarePayedInCart();
-                    backToCartFragmentAfterPayed();
-                    break;
-                case "fail":
-                    changeOrderStatusOfNet(ORDER_STATUS_FAIL);
-                    T.showTips("支付失败");
-                    break;
-                case "cancel":
-                    changeOrderStatusOfNet(ORDER_STATUS_CANCEL);
-                    T.showTips("支付已取消");
-                    break;
-                case "invalid":
-                    T.showTips("支付插件未安装");
-                    break;
-                case "unknown":
-                    T.showTips("发生未知错误");
-                    break;
+                switch (result) {
+                    case "success":
+                        T.showTips("支付成功");
+                        changeOrderStatusOfNet(ORDER_STATUS_SUCCESS);
+                        removeWarePayedInCart();
+                        backToCartFragmentAfterPayed();
+                        break;
+                    case "fail":
+                        changeOrderStatusOfNet(ORDER_STATUS_FAIL);
+                        T.showTips("支付失败");
+                        break;
+                    case "cancel":
+                        changeOrderStatusOfNet(ORDER_STATUS_CANCEL);
+                        T.showTips("支付已取消");
+                        break;
+                    case "invalid":
+                        T.showTips("支付插件未安装");
+                        break;
+                    case "unknown":
+                        T.showTips("发生未知错误");
+                        break;
 
-            }
+                }
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
 //                T.showTips(result+errorMsg+extraMsg);
@@ -265,14 +268,14 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
 
     private void changeOrderStatusOfNet(int status) {
         Map<String, String> params = new HashMap<>();
-        params.put("order_num",mOrderNum);
-        params.put("status", status+"");
+        params.put("order_num", mOrderNum);
+        params.put("status", status + "");
 
         OkHttpHelper.getInstance().post(Constants.ORDER_COMPLETE_URL, params,
                 new SpotsDialogCallBack<BaseMessage>(this) {
                     @Override
                     public void onSuccess(Response response, BaseMessage message) {
-                        if (message.getStatus()==1){
+                        if (message.getStatus() == 1) {
                             Log.e(TAG, "onSuccess: 订单状态更新成功");
                         }
                     }
@@ -285,14 +288,23 @@ public class PayChanelActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void removeWarePayedInCart() {
-        Log.e(TAG, "removeWarePayedInCart: "+mProvider.toString() );
-        mProvider.removeWares(mData);
+
+        List<WareChange> wareChanges = getWareChanges();
+        EventBus.getDefault().post(wareChanges);
+    }
+
+    private List<WareChange> getWareChanges() {
+        List<WareChange> wareChanges = new ArrayList<>();
+        for (WareInCart ware : mData) {
+            wareChanges.add(new WareChange(ware, 0 - ware.getCount()));
+        }
+        return wareChanges;
     }
 
     private void backToCartFragmentAfterPayed() {
-        Intent intent=new Intent();
-        intent.putExtra(Constants.KEY_WARE_PAYED_LIST,(Serializable) mData);
-        setResult(RESULT_OK,intent);
+        Intent intent = new Intent();
+        intent.putExtra(Constants.KEY_WARE_PAYED_LIST, (Serializable) mData);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

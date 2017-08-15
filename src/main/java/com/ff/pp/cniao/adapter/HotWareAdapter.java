@@ -5,11 +5,14 @@ import android.net.Uri;
 import android.view.View;
 
 import com.facebook.drawee.view.DraweeView;
+import com.ff.pp.cniao.bean.WareChange;
 import com.ff.pp.myapplication2.R;
 import com.ff.pp.cniao.bean.Ware;
 import com.ff.pp.cniao.tools.T;
 import com.ff.pp.cniao.tools.WareInCartProvider;
 
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class HotWareAdapter extends BaseAdapter<Ware> {
 
     public HotWareAdapter(Context context, List<Ware> list) {
         super(context, list, R.layout.hot_ware_item);
-        mProvider = new WareInCartProvider();
+        mProvider = WareInCartProvider.getInstance();
     }
 
     @Override
@@ -36,7 +39,8 @@ public class HotWareAdapter extends BaseAdapter<Ware> {
             holder.getButton(R.id.imageButton_purchase).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mProvider.put(ware);
+
+                    EventBus.getDefault().post(new WareChange(ware,1));
                     T.showTips("已放入购物车");
                 }
             });

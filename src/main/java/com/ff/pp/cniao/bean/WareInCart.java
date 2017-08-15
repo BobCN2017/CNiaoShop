@@ -17,6 +17,12 @@ public class WareInCart extends Ware implements Serializable {
         isChecked=true;
     }
 
+    public WareInCart(Ware ware, int count) {
+        super(ware);
+        this.count=count;
+        isChecked=true;
+    }
+
     public boolean isChecked() {
         return isChecked;
     }

@@ -51,8 +51,11 @@ dependencies {
     compile name: 'SMSSDK-2.1.4', ext: 'aar'
     compile name: 'SMSSDKGUI-2.1.4', ext: 'aar'
     //必须添加
+
     //使用支付宝时添加
+
     //使用银联支付时添加
+
     //使用微信支付时添加
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:design:24.2.1'
@@ -78,4 +81,5 @@ dependencies {
     compile 'com.pingxx:pingpp-wxpay:2.1.9'
     compile 'com.jaeger.ninegridimageview:library:1.1.0'
     testCompile 'junit:junit:4.12'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

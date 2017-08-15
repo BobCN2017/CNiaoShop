@@ -13,6 +13,7 @@ import com.ff.pp.cniao.Application.MyApplication;
 import com.ff.pp.cniao.bean.BaseMessage;
 import com.ff.pp.cniao.bean.Order;
 import com.ff.pp.cniao.bean.Ware;
+import com.ff.pp.cniao.bean.WareChange;
 import com.ff.pp.cniao.tools.Constants;
 import com.ff.pp.cniao.tools.OkHttpHelper;
 import com.ff.pp.cniao.tools.SpotsDialogCallBack;
@@ -20,6 +21,8 @@ import com.ff.pp.cniao.view.ThreePositionToolbar;
 import com.ff.pp.myapplication2.R;
 import com.ff.pp.cniao.tools.T;
 import com.ff.pp.cniao.tools.WareInCartProvider;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -51,7 +54,7 @@ public class WareDetailActivity extends BaseActivity {
         initToolbar();
         initWebView();
 
-        mWareInCartProvider = new WareInCartProvider();
+        mWareInCartProvider = WareInCartProvider.getInstance();
         mDialog = new SpotsDialog(this, "Loading...");
         mDialog.show();
 
@@ -154,8 +157,8 @@ public class WareDetailActivity extends BaseActivity {
 
         @android.webkit.JavascriptInterface
         public void buy(long id) {
-            mWareInCartProvider.put(mWare);
 
+            EventBus.getDefault().post(new WareChange(mWare,1));
             T.showTips("去付款，实际为加入购物车");
         }
 

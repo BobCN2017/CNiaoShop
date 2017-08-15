@@ -83,20 +83,20 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, Campaigns.Campaign campaign) {
 
-                startAnimator(view,campaign);
+                startAnimator(view, campaign);
 
             }
         });
     }
 
     private void startAnimator(View view, final Campaigns.Campaign campaign) {
-        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotationX",0f,360f)
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotationX", 0f, 360f)
                 .setDuration(500);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                WareListActivity.startThisActivity(getContext(),campaign);
+                WareListActivity.startThisActivity(getContext(), campaign);
             }
         });
         animator.start();
